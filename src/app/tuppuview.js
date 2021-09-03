@@ -424,26 +424,24 @@ export default class TuppuView extends Croquet.View {
 
   changeFocus(isFocused) {
     State.isFocused = isFocused;
+    const domTextArea = document.getElementById("tuppuInput");
     if (isFocused) {
       this.TextBox.material.uniforms.color1.value = new Color("#ffff00");
       this.TextBox.material.uniforms.color2.value = new Color("#ff77ff");
+      domTextArea.focus();
     } else {
       this.TextBox.material.uniforms.color1.value = new Color("#31c7de");
       this.TextBox.material.uniforms.color2.value = new Color("#de3c31");
+      domTextArea.blur();
     }
   }
 
   initInputs() {
     // 2D inputs
-    window.addEventListener("keydown", this.asyncUpdateText.bind(this));
-    window.addEventListener("mousedown", e => {
-      e.preventDefault();
-    });
-    window.addEventListener("keyup", e => {
-      if (e.key == "Control") {
-        // ctrl
-        State.ctrlDown = false;
-      }
+    const inputEl = document.getElementById("tuppuInput");
+    inputEl.addEventListener("keyup", e => {
+      State.currentText = inputEl.value;
+      this.publish("tuppomodel", "update-text-model", State.currentText);
     });
 
     // XR controllers
